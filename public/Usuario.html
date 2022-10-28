@@ -1,0 +1,107 @@
+<!doctype html>
+
+<html lang="pt-br">
+
+<head>
+
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="./css/style.css">
+
+  <title>Simple Generator API</title>
+
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+</head>
+
+<body>
+
+  <div class="topnav">
+    <a href="Generator.html">Home</a>
+    <a href="Login.html" onclick="signout()">Logout</a>
+    <a class="active">Perfil</a>
+  </div>
+
+  <div class="conteudo">
+    <main class="row row-cols-1 row-cols-md-3 g-4"></main>
+  </div>
+
+  <div class="conteudo">
+    <div class="container-1 containerstyle">
+      <h2>Seus dados gerados:</h2>
+      <main id="dados" class="dados"></main>
+    </div>
+  </div>
+  
+  <script type="module">
+    import Auth from './script/auth.js';
+
+    const main = document.querySelector('main');
+
+    const main2 = document.getElementById('dados');
+
+    async function userid() {
+      const config = {
+        method: 'get',
+        headers: {
+          Authorization: `Bearer ${Auth.getToken()}`,
+        },
+      };
+
+      const url = '/userid';
+
+      const userID = await (await fetch(url, config)).json();
+
+      username(userID);
+    };
+
+    function username(data) {
+      const view = `
+      <div class="titulo">
+        <h1>${data.name}</h1>
+      </div>
+      <div class="conteudo">
+        <img src="${data.image}" style="max-width: 400px; border-radius: 50%;">
+        <main class="row row-cols-1 row-cols-md-3 g-4"></main>
+      </div>`;
+
+      main.insertAdjacentHTML('afterbegin', view);
+    };
+
+    async function getdata() {
+      const config = {
+        method: 'get',
+        headers: {
+          Authorization: `Bearer ${Auth.getToken()}`,
+        },
+      };
+
+      const url = '/data';
+
+      const data = await (await fetch(url, config)).json();
+
+      dataview(data);
+    };
+
+    function dataview(data) {
+      for (const i of data) {
+          
+        let datas = i;
+
+        const view = `
+        <div id="datas" class="card-body p-0">
+          <li>${datas.data}</li>
+        </div>`;
+
+        main2.insertAdjacentHTML('afterbegin', view);
+
+      };
+    };
+    
+    userid();
+    getdata();
+  </script>
+</body>
+</html>
